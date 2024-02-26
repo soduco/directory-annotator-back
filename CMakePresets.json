@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 20,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "default",
+      "displayName": "Default Config",
+      "description": "Default build using Ninja generator",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+          "CMAKE_BUILD_TYPE": "Release",
+          "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/build/conan_toolchain.cmake",
+          "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      },
+      "environment": {
+          "CXXFLAGS" : "-mavx"
+      }
+    }
+  ]
+}

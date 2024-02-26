@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "entry.schema.json",
+  "title": "Entry",
+  "description": "Entry specs",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "The unique identifier in the page hierarchy",
+      "type": "integer"
+    },
+    "parent" : {
+        "description": "The parent element in the page hierarchy",
+        "type": "integer"    
+    },
+    "box" : {
+        "type" : "array",
+        "items": { "type": "number"},
+        "minItems": 4,
+        "maxItems": 4
+    },
+    "text_ocr" : {
+        "type" : "string",
+        "description" : "The original text from the OCR"
+    },
+    "ner_xml" : {
+        "type" : "string",
+        "description" : "Tagged text for Named Entities" 
+    },
+    "person" : {
+        "description" : "The name(s) related to the entity",
+        "type" : "string"
+    },
+    "activities" : {
+        "description" : "The list of activities detected",
+        "type" : "array",
+        "items" : { "type" : "string" }
+    },
+    "addresses" : {
+        "description" : "The list of addresses detected in the entry",
+        "type" : "array",
+        "items" : {
+            "type" : "object",
+            "properties" : {
+                "street_name" : { "type" : "string" },
+                "street_numbers" : {"type" : "array"},
+                "feature_type" : {"type" : "string"}
+            },
+            "required" : ["street_name", "street_numbers"]
+        }
+    }
+  },  
+  "required": [ "id", "parent", "box", "text_ocr", "ner_xml" ]
+}

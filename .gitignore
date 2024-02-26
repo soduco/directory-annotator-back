@@ -1,0 +1,9 @@
+build/
+bin/
+lib/
+soducocxx.so
+tags
+/*.cfg
+__pycache__
+*.swp
+data

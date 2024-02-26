@@ -1,0 +1,18 @@
+CJ:
+  is_tagged: true
+  tooltip: Croix de juillet
+LH:
+  is_tagged: true
+  tooltip: "L\xE9gion d'honneur"
+"\u24B6":
+  is_tagged: false
+  tooltip: "M\xE9daille d'argent"
+"\u24B7":
+  is_tagged: false
+  tooltip: "M\xE9daille de bronze"
+"\u24C4":
+  is_tagged: false
+  tooltip: "M\xE9daille d'or"
+"\u24C5":
+  is_tagged: false
+  tooltip: "M\xE9daille de platine"

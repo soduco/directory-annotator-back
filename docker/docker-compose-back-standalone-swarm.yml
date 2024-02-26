@@ -1,0 +1,40 @@
+version: "3.3"
+services:
+  backend:
+    # We will have to perform a "docker login gitlab-registry.lre.epita.fr/soduco/directory-annotator-back"
+    # before we can access this image.
+    # credentials (RO):
+    # - login: docker-swarm
+    # - password: glpat-U88cVLRNetksxGcJopcM
+   image: gitlab-registry.lre.epita.fr/soduco/directory-annotator-back/computeapp:latest
+   # dockerfile: ./docker/deploy-debian-stable.dockerfile
+   ports:
+      - "8011:8000"
+   # Must include all variables here, no support for .env files in swarm mode
+   environment:
+      - SODUCO_SETTINGS=/app/settings.cfg
+      - SCRIPT_NAME=/soduco/directory-annotator/backend
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+   configs:
+      - source: app_settings
+        target: "/app/settings.cfg"
+   secrets:
+      - source: auth_tokens
+        target: "/app/auth_tokens"
+   deploy:
+      replicas: 5
+   healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/soduco/directory-annotator/backend/health_check/"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+
+configs:
+   app_settings:
+      file: ./settings-back.cfg
+
+secrets:
+  auth_tokens:
+      # WARNING secret file size must be >0 during deployment
+      file: ./.secret-keys

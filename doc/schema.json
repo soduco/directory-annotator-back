@@ -1,0 +1,10 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "JSON SCHEMA de demonstration",
+    "description": "Ceci est un JSON SCHEMA pour le site Developpez",
+
+    "type": "array",
+    "items": {
+        "$ref": "file:/work/carlinet/dev/directory-annotator-back/doc/entry.schema.json"
+    }   
+}

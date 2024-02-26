@@ -1,0 +1,3 @@
+# Ignoring everything in this directory except this file to keep it empty
+*!.gitignore
+*.zip*

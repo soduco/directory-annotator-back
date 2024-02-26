@@ -1,0 +1,28 @@
+version: "3.3"
+services:
+  backend:
+     image: gitlab-registry.lre.epita.fr/soduco/directory-annotator-back
+     build:
+      context: ..
+      dockerfile: ./docker/deploy-debian-stable.dockerfile
+     ports:
+        - "${REVERSE_PORT_BACK}:8000"
+     env_file:
+        - .env
+     environment:
+        - SODUCO_SETTINGS=/app/settings.cfg
+        - SCRIPT_NAME=/soduco/directory-annotator/backend
+     secrets:
+        - auth_tokens
+     volumes:
+        - type: bind
+          source: ${PATH_DIRECTORIES}
+          target: "/data/directories"
+          read_only: true
+        - type: bind
+          source: ./settings-back.cfg
+          target: "/app/settings.cfg"
+
+secrets:
+  auth_tokens:
+    file: .secret-keys
