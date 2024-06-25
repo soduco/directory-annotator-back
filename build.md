@@ -15,13 +15,9 @@ conan remote add lrde-public https://artifactory.lrde.epita.fr/artifactory/api/c
 ### Ubuntu
 ```
 sudo apt install \
-    enchant \
-    hunspell-fr \
     libboost1.71-dev \
     libfreeimage-dev \
-    libpoppler-cpp-dev \
-    libtesseract-dev \
-    tesseract-ocr-fra
+    libpoppler-cpp-dev
 ```
 
 # Build (need cmake 3.11+)
@@ -31,6 +27,6 @@ There is a [build script](./build.sh) that runs the process described here.
 ```bash
 mkdir build && cd build
 conan install .. --build missing -s compiler.libcxx=libstdc++11 -s compiler.cppstd=20
-cmake .. -DCMAKE_BUILD_TYPE=Release  # -DPYTHON_EXECUTABLE=/usr/bin/python3.8 # (opt.) force Python executable
+cmake .. -DCMAKE_BUILD_TYPE=Release  # -DPYTHON_EXECUTABLE=/usr/bin/python3.10 # (opt.) force Python executable
 cmake --build . --config Release
 ```
