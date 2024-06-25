@@ -19,7 +19,8 @@ def get_pdf_page(path: str, view: int) -> BytesIO:
     try:
         pdf_file = Pdf.open(path)
         num_pages = len(pdf_file.pages)
-        if not 1 <= view <= num_pages:
+        print(f"Reading PDF file {path} with {num_pages} pages.")
+        if not 0 <= view < num_pages:
             raise InvalidViewIndexError()
         page = pdf_file.pages[view]
 

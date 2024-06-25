@@ -1,7 +1,7 @@
 # SODUCO CLI tools for document image preprocessing and layout detection
 
 ## Usage
-Quick docker usage:
+Quick Docker usage:
 ```shell
 # Build
 docker build -t soducocli -f docker/deployer-compute.dockerfile .
@@ -14,11 +14,24 @@ docker run --rm -it --name sdctest  soducocli bash
 python /app/cli/soduco_cli.py --help
 ```
 
+Sample usage with Docker:
+```shell
+# C++ tool
+docker run --rm -it --name sdctest -v$(pwd)/test:/data:ro -v/tmp/output:/output  soducocli /app/bin/cli /data/data/Didot_1851a_300-page.jpg /output/imgcpp.jpg /output/jsoncpp.json
+
+# FIXME bug with PDF input (no result)
+docker run --rm -it --name sdctest -v$(pwd)/test:/data:ro -v/tmp/output:/output  soducocli /app/bin/cli /data/directories/Didot1843a700extr.pdf /output/imgcpp.jpg /output/jsoncpp.json --page 0--1
+
+# Python tool
+docker run --rm -it --name sdctest -v$(pwd)/test:/data:ro -v/tmp/output:/output  soducocli python /app/cli/soduco_cli.py /data/directories/Didot1843a700extr.pdf  -p 1 --output-json /output/img.json
+```
+
 You can also build the project from sources to generate a standalone application.
 
 ## Building from sources
 
 To build the project from C++ sources, see the related [documentation](./build.md)
+
 
 ## Python Commandline interface
 

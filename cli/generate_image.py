@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from typing import Tuple
-from matplotlib import cm
+from matplotlib import pyplot
 import numpy as np
 
 from back import scribo
@@ -97,7 +97,7 @@ def __color_image_with_mask_light_red(image: np.array, mask: np.array) -> np.arr
     return np.where(mask[:, :, np.newaxis], red_image, image)
 
 def __generate_random_LUT() -> np.array:
-    cmap = cm.get_cmap("Dark2", NCOLORS)
+    cmap = pyplot.get_cmap(name="Dark2", lut=NCOLORS)
     colors = cmap.colors
     colors = np.insert(colors, 0, (0, 0, 0, 1), axis=0)
     LUT = np.array(colors * 255, dtype="uint8")

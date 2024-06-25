@@ -22,7 +22,7 @@ def _get_parser():
         help="Path to the pdf",
         )
     parser.add_argument(
-        "output_img",
+        "--output_img",
         help="Path to the output image (JPG)",
         )
 
@@ -31,7 +31,7 @@ def _get_parser():
         "-p",
         type=int,
         required=True,
-        help="Page to demat",
+        help="Page to demat (1-based index)",
         )
 
     parser.add_argument(

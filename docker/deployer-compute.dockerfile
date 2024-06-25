@@ -105,13 +105,13 @@ CMD [ "/app/bin/cli", "--help" ]
 ############################################################
 FROM directory-annotator-back-base as directory-annotator-back-cli
 
-COPY cli /app/cli/
-
 WORKDIR /app/cli
-COPY docker/requirements-back-runtime.txt .
 
+COPY docker/requirements-back-runtime.txt .
 # FIXME freeze the python dependencies
 RUN pip install --no-cache-dir -r requirements-back-runtime.txt
+
+COPY cli ./
 
 # FIXME install the python dependencies
 
