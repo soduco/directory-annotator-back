@@ -73,31 +73,9 @@ parser.add_argument('-o',
 
 # FIXME: factorize as a subparser
 parser.add_argument(
-        "--ocr-engine",
-        default=OCREngine.PERO,
-        required=False,
-        type=lambda x: OCREngine[x.upper()],
-        choices=list(OCREngine),
-        help="Specify the ocr engine used (PERO|TESSERACT)"
-        )
-parser.add_argument(
         "--layout-file-pattern",
         required=False,
         help="Provide entries from a JSON layout file instead of running the layout extraction. '{}' will be replaced by the page number."
-        )
-parser.add_argument(
-        "--skip-ocr",
-        action="store_true",
-        dest="disable_OCR",
-        required=False,
-        help="Skip tesseract text extraction",
-        )
-parser.add_argument(
-        "--skip-ner",
-        dest="disable_NER",
-        action="store_true",
-        required=False,
-        help="Skip the NER processing",
         )
 
 args = parser.parse_args()

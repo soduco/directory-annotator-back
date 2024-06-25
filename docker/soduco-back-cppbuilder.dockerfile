@@ -15,6 +15,7 @@ RUN echo 'deb http://deb.debian.org/debian bullseye-backports main' >> /etc/apt/
     cmake/bullseye-backports \
     g++ \
     libboost-dev \
+    libfindbin-libs-perl \
     libfreeimage-dev \
     libpoppler-cpp-dev \
     libtesseract-dev \

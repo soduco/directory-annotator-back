@@ -57,11 +57,11 @@ EOF
 build()
 {
     echo_err "Recreating build dir"
-    rm -rf build && mkdir build && cd build
+    rm -rf build && mkdir build
     echo_err "conan: install deps"
-    conan install -u .. --build pylene --build missing
+    conan install . --build missing -s compiler.libcxx=libstdc++11 -s compiler.cppstd=20 --output-folder build
     echo_err "cmake: generate build scripts"
-    cmake .. --preset default
+    cmake .. -DCMAKE_BUILD_TYPE=$1
     echo_err "cmake: launch build"
     cmake --build . --config $1
     echo_err "cpack: create artefacts"

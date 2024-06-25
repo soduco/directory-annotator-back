@@ -1,0 +1,12 @@
+fastspellchecker
+filelock
+flask
+flask-cors
+gunicorn
+numpy
+pillow
+pikepdf
+pytest
+python-dotenv
+regex
+unidecode

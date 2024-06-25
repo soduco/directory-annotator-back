@@ -140,9 +140,6 @@ def XYCutLayoutExtraction(input: np.ndarray, segments: List, config: scribocxx.K
 
 
 
-def TesseractTextExtraction(input: np.ndarray, regions: List[scribocxx.LayoutRegion], is_line=False):
-    texts = scribocxx._TesseractTextExtraction(input, regions, is_line=is_line)
-    return texts
 
 def WSLineExtraction(input: np.ndarray, regions: List[scribocxx.LayoutRegion], config: scribocxx.KConfig, debug_prefix="") -> Tuple[np.ndarray, scribocxx.LayoutRegion]:
     """Extract the lines from a list of regions. It returns a pair (ws, lines) where `ws` is an image of labeled lines.

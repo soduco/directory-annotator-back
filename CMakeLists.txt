@@ -12,8 +12,8 @@ find_package(CLI11)
 include(pybind11Common)
 find_package(pylene-numpy REQUIRED)
 find_package(poppler REQUIRED)
-find_package(cpprestsdk REQUIRED)
-find_package(uwebsockets REQUIRED)
+# find_package(cpprestsdk REQUIRED)
+# find_package(uwebsockets REQUIRED)
 
 
 # set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -52,12 +52,13 @@ pybind11_add_module(scribocxx MODULE
   sources/src/scribo-python.cpp
   sources/src/preprocessing.cpp
   sources/src/DOMTypes.cpp
-  sources/src/TesseractTextExtraction.cpp
+  # sources/src/TesseractTextExtraction.cpp
   )
 
 
 target_include_directories(scribocxx PUBLIC sources/include)
-target_link_libraries(scribocxx PRIVATE pylene::core pylene::io-freeimage spdlog::spdlog pylene-numpy::pylene-numpy tesseract scribo)
+# target_link_libraries(scribocxx PRIVATE pylene::core pylene::io-freeimage spdlog::spdlog pylene-numpy::pylene-numpy tesseract scribo)
+target_link_libraries(scribocxx PRIVATE pylene::core pylene::io-freeimage spdlog::spdlog pylene-numpy::pylene-numpy scribo)
 
 add_executable(cli
   sources/src/display.cpp
@@ -66,24 +67,24 @@ add_executable(cli
   sources/src/pdf_tool.hpp
   sources/src/pdf_tool.cpp)
 
-add_executable(server
-  sources/src/api.cpp
-)
+# add_executable(server
+#   sources/src/api.cpp
+# )
 
 
 target_include_directories(cli PUBLIC sources/include)
 target_link_libraries(cli pylene::io-freeimage scribo blend2d::blend2d spdlog::spdlog nlohmann_json::nlohmann_json CLI11::CLI11 poppler::poppler)
 set_target_properties(cli PROPERTIES INSTALL_RPATH "./lib" )
 
-target_include_directories(server PUBLIC sources/include)
-target_link_libraries(server cpprestsdk::cpprestsdk uwebsockets::uwebsockets spdlog::spdlog scribo pylene::io-freeimage CLI11::CLI11)
-set_target_properties(server PROPERTIES INSTALL_RPATH "./lib" )
+# target_include_directories(server PUBLIC sources/include)
+# target_link_libraries(server cpprestsdk::cpprestsdk uwebsockets::uwebsockets spdlog::spdlog scribo pylene::io-freeimage CLI11::CLI11)
+# set_target_properties(server PROPERTIES INSTALL_RPATH "./lib" )
 
 include(GNUInstallDirs)
 install(DIRECTORY ${CMAKE_BINARY_DIR}/lib/ DESTINATION bin/lib)
 install(TARGETS scribocxx LIBRARY DESTINATION "./back")
 install(TARGETS cli)
-install(TARGETS server)
+# install(TARGETS server)
 
 set(CPACK_GENERATOR "ZIP")
 set(CPACK_STRIP_FILES TRUE)

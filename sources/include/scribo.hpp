@@ -116,8 +116,4 @@ namespace scribo
   /// \return A vector that maps (line number) -> 1 if it starts an entry, 0 otherwise
   void EntryExtraction(Box region, std::span<LayoutRegion> lines, std::vector<LayoutRegion>& out);
 
-  /// \brief
-  auto TesseractTextExtraction(const mln::image2d<uint8_t>& input, std::span<Box> regions,
-                               bool is_line = false) -> std::vector<std::string>;
-
 } // namespace scribo

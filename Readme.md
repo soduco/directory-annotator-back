@@ -30,7 +30,7 @@ The simplest way to get started is to:
    * you can now run the builder in the root of the backend project: `docker run --rm -it -v $(pwd):/app/ soduco/back_builder sh build.sh`
    * the artifacts are now at the right place for the deployment image to be built
 4. Download (and check for newer) assets
-   * `sftp soducoshared@geohistoricaldata.org:./public/fr_ner_directories-20210720.tar.gz`
+   * `wget https://www.lrde.epita.fr/~jchazalo/SHARE/fr_ner_directories-20210720.tar.gz`
    * `wget https://www.lrde.epita.fr/~jchazalo/SHARE/pero_eu_cz_print_newspapers_2020-10-09.tar.gz`
    * `wget https://download.pytorch.org/models/vgg16-397923af.pth`
 5. Build and launch the deployment image using docker-compose (use [pipx](https://pypi.org/project/pipx/) to install it if needed):

@@ -1,84 +1,84 @@
-cache:
-    paths:
-        - .cache/conan/data
-        - .cache/data
+# cache:
+#     paths:
+#         - .cache/conan/data
+#         - .cache/data
 
-.build:
-  stage: build
+# .build:
+#   stage: build
 
-  before_script:
-    - dnf install -y -q poppler-cpp-devel libstdc++-static tesseract-devel && dnf clean all
-    - conan config set storage.path="${CI_PROJECT_DIR}/.cache/conan/data"
+#   before_script:
+#     - dnf install -y -q poppler-cpp-devel libstdc++-static tesseract-devel && dnf clean all
+#     - conan config set storage.path="${CI_PROJECT_DIR}/.cache/conan/data"
 
-  script:
-    - mkdir build && cd build
-    - conan profile detect
-    - conan install -u ..  --build "ninja/1.11.1" --build pylene --build missing -pr "${CONAN_PROFILE_PATH}" -of .
-    - cmake .. --preset conan-release
-    - cmake --build . --config Release -j
-    - cpack -G ZIP -G TGZ .
-  dependencies: []
-  artifacts:
-    paths:
-        - build/soducocxx-*.*
-    expire_in: 1 month
+#   script:
+#     - mkdir build && cd build
+#     - conan profile detect
+#     - conan install -u ..  --build "ninja/1.11.1" --build pylene --build missing -pr "${CONAN_PROFILE_PATH}" -of .
+#     - cmake .. --preset conan-release
+#     - cmake --build . --config Release -j
+#     - cpack -G ZIP -G TGZ .
+#   dependencies: []
+#   artifacts:
+#     paths:
+#         - build/soducocxx-*.*
+#     expire_in: 1 month
 
-build py39 gcc11:
-      extends: .build
-      image: "${CI_REGISTRY}/olena/pylene-dockers/fedora-34"
-      allow_failure: true
-      rules:
-            - when: manual
-      variables:
-            CONAN_PROFILE_PATH: "${CI_PROJECT_DIR}/.gitlabci/gcc-11"
+# build py39 gcc11:
+#       extends: .build
+#       image: "${CI_REGISTRY}/olena/pylene-dockers/fedora-34"
+#       allow_failure: true
+#       rules:
+#             - when: manual
+#       variables:
+#             CONAN_PROFILE_PATH: "${CI_PROJECT_DIR}/.gitlabci/gcc-11"
 
-build debian stable:
-      extends: .build
-      image: python:3.9-slim-bullseye
-      before_script:
-             - echo 'deb http://deb.debian.org/debian bullseye-backports main' >> /etc/apt/sources.list
-             - apt update
-             - apt install -q -y ninja-build libfreeimage-dev libtesseract-dev libpoppler-cpp-dev libboost-dev cmake/bullseye-backports cmake-data/bullseye-backports g++
-             - pip3 install -q conan
-             - conan remote add lrde-public https://artifactory.lrde.epita.fr/artifactory/api/conan/lrde-public
-      allow_failure: true
-      rules:
-        - if: '$CI_COMMIT_BRANCH == "master"'
-        - when: manual
-      variables:
-        CONAN_PROFILE_PATH: "${CI_PROJECT_DIR}/.gitlabci/gcc-10"
+# build debian stable:
+#       extends: .build
+#       image: python:3.9-slim-bullseye
+#       before_script:
+#              - echo 'deb http://deb.debian.org/debian bullseye-backports main' >> /etc/apt/sources.list
+#              - apt update
+#              - apt install -q -y ninja-build libfreeimage-dev libtesseract-dev libpoppler-cpp-dev libboost-dev cmake/bullseye-backports cmake-data/bullseye-backports g++
+#              - pip3 install -q conan
+#              - conan remote add lrde-public https://artifactory.lrde.epita.fr/artifactory/api/conan/lrde-public
+#       allow_failure: true
+#       rules:
+#         - if: '$CI_COMMIT_BRANCH == "master"'
+#         - when: manual
+#       variables:
+#         CONAN_PROFILE_PATH: "${CI_PROJECT_DIR}/.gitlabci/gcc-10"
 
 
-deploy:
-  stage: deploy
-  image: docker:latest
-  # not needed on our infra
-  # services:
-  # - docker:23-dind
-  dependencies: ["build debian stable"]
-  script:
-    # - echo "Platform info --------------------"
-    # - uname -a || echo ERR
-    # - lsb_release -a || echo ERR
-    # - cat /etc/debian_version || echo ERR
-    # - cat /etc/*-release || echo ERR
-    # - hostnamectl || echo ERR
-    # - cat /proc/version || echo ERR
-    # - echo "SSH setup --------------------"
-    # - mkdir ~/.ssh && ssh-keyscan geohistoricaldata.org >> ~/.ssh/known_hosts
-    # - chmod go-rwx $SSHKEY_FTP_SODUCO 
-    - echo "Check docker availability --------------------"
-    - docker info
-    - echo "Log in to container registry --------------------"
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    # - pwd
-    # - ls -lA
-    # opt enable Docker cache
-    - echo "Pull any previous image to reuse layer cache --------------------"
-    - docker pull "${CI_REGISTRY}/${CI_PROJECT_PATH}/computeapp:latest" || true
-    - echo "Build docker image --------------------"
-    - docker build . -t "${CI_REGISTRY}/${CI_PROJECT_PATH}/computeapp:build-${CI_PIPELINE_IID}" -t "${CI_REGISTRY}/${CI_PROJECT_PATH}/computeapp:latest" -f docker/deploy-debian-stable.dockerfile
-    - echo "Push docker image --------------------"
-    - docker push "${CI_REGISTRY}/${CI_PROJECT_PATH}/computeapp:build-${CI_PIPELINE_IID}"
-    - docker push "${CI_REGISTRY}/${CI_PROJECT_PATH}/computeapp:latest"
-  only: [ "master" ]
+# deploy:
+#   stage: deploy
+#   image: docker:latest
+#   # not needed on our infra
+#   # services:
+#   # - docker:23-dind
+#   dependencies: ["build debian stable"]
+#   script:
+#     # - echo "Platform info --------------------"
+#     # - uname -a || echo ERR
+#     # - lsb_release -a || echo ERR
+#     # - cat /etc/debian_version || echo ERR
+#     # - cat /etc/*-release || echo ERR
+#     # - hostnamectl || echo ERR
+#     # - cat /proc/version || echo ERR
+#     # - echo "SSH setup --------------------"
+#     # - mkdir ~/.ssh && ssh-keyscan geohistoricaldata.org >> ~/.ssh/known_hosts
+#     # - chmod go-rwx $SSHKEY_FTP_SODUCO 
+#     - echo "Check docker availability --------------------"
+#     - docker info
+#     - echo "Log in to container registry --------------------"
+#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#     # - pwd
+#     # - ls -lA
+#     # opt enable Docker cache
+#     - echo "Pull any previous image to reuse layer cache --------------------"
+#     - docker pull "${CI_REGISTRY}/${CI_PROJECT_PATH}/computeapp:latest" || true
+#     - echo "Build docker image --------------------"
+#     - docker build . -t "${CI_REGISTRY}/${CI_PROJECT_PATH}/computeapp:build-${CI_PIPELINE_IID}" -t "${CI_REGISTRY}/${CI_PROJECT_PATH}/computeapp:latest" -f docker/deploy-debian-stable.dockerfile
+#     - echo "Push docker image --------------------"
+#     - docker push "${CI_REGISTRY}/${CI_PROJECT_PATH}/computeapp:build-${CI_PIPELINE_IID}"
+#     - docker push "${CI_REGISTRY}/${CI_PROJECT_PATH}/computeapp:latest"
+#   only: [ "master" ]

@@ -136,17 +136,17 @@ namespace scribo
   }
 
 
-  /// \brief
-  auto _TesseractTextExtraction(mln::ndbuffer_image input, std::vector<Box> regions,
-                                bool is_line = false) -> std::vector<std::string>
-  {
-    mln::image2d<uint8_t>* img = input.cast_to<std::uint8_t, 2>();
-    if (!img)
-      throw std::runtime_error("Unable to cast the input/output image");
+  // /// \brief
+  // auto _TesseractTextExtraction(mln::ndbuffer_image input, std::vector<Box> regions,
+  //                               bool is_line = false) -> std::vector<std::string>
+  // {
+  //   mln::image2d<uint8_t>* img = input.cast_to<std::uint8_t, 2>();
+  //   if (!img)
+  //     throw std::runtime_error("Unable to cast the input/output image");
 
-    [[maybe_unused]] py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect> _g;
-    return TesseractTextExtraction(*img, std::span{regions.begin(), regions.end()}, is_line);
-  }
+  //   [[maybe_unused]] py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect> _g;
+  //   return TesseractTextExtraction(*img, std::span{regions.begin(), regions.end()}, is_line);
+  // }
 } // namespace scribo
 
 
@@ -265,8 +265,8 @@ PYBIND11_MODULE(scribocxx, m)
       .def("_XYCutLayoutExtraction", &scribo::_XYCutLayoutExtraction)
       .def("_WSLineExtraction", &scribo::_WSLineExtraction)
       .def("_EntryExtraction", &scribo::_EntryExtraction)
-      .def("_TesseractTextExtraction", &scribo::_TesseractTextExtraction,
-           py::arg("input"), py::arg("regions"), py::arg("is_line") = false)
+      // .def("_TesseractTextExtraction", &scribo::_TesseractTextExtraction,
+          //  py::arg("input"), py::arg("regions"), py::arg("is_line") = false)
       .def("_set_debug_level", &scribo::set_debug_level)
       .def("_subsample", &scribo::_subsample);
 
