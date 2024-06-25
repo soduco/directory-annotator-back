@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image
 
 from generate_image import generate_image
-from back.Application import App, OCREngine
+from back.Application import App
 from back import scribo, scribocxx
 
 
@@ -28,8 +28,7 @@ def process_options(input_buf: np.array, **kwargs) -> np.array:
         (False, False): scribocxx.FORCE_NONE,
     }
 
-    app = App(PERO_CONFIG_DIR="../pero_eu_cz_print_newspapers_2020-10-07/",
-              logging_level=logging_level)
+    app = App(logging_level=logging_level)
 
 
     if deskew_only:
@@ -40,10 +39,6 @@ def process_options(input_buf: np.array, **kwargs) -> np.array:
             data = json.load(f)
             data = [ scribo.LayoutRegion.from_json(x) for x in data ]
         deskewed = app.deskew(input_buf)
-        if not kwargs.get("disable_OCR", False):
-            app.process_ocr(deskewed, data, kwargs.get("ocr_engine", OCREngine.PERO))
-        if not kwargs.get("disable_NER", False):
-            app.process_ner(data)
     else:
         data, deskewed = app.process(input_buf, **kwargs)
 

@@ -14,7 +14,6 @@ sys.path.insert(1, '../')
 
 from process_options import process_options
 from pdf_opener import get_pdf_page
-from back.Application import OCREngine
 
 
 

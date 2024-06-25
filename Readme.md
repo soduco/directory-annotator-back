@@ -1,5 +1,6 @@
 # SODUCO CLI tools for document image preprocessing and layout detection
 
+## Usage
 Quick docker usage:
 ```shell
 # Build
@@ -13,6 +14,7 @@ docker run --rm -it --name sdctest  soducocli bash
 python /app/cli/soduco_cli.py --help
 ```
 
+You can also build the project from sources to generate a standalone application.
 
 ## Building from sources
 

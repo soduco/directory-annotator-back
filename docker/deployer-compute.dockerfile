@@ -96,6 +96,9 @@ RUN set -ex && \
 # set environment variables
 ENV LC_ALL=C
 
+WORKDIR /app/bin
+
+CMD [ "/app/bin/cli", "--help" ]
 
 ############################################################
 ### Fourth stage: runtime environment for full-backend  ####
@@ -105,6 +108,10 @@ FROM directory-annotator-back-base as directory-annotator-back-cli
 COPY cli /app/cli/
 
 WORKDIR /app/cli
+COPY docker/requirements-back-runtime.txt .
+
+# FIXME freeze the python dependencies
+RUN pip install --no-cache-dir -r requirements-back-runtime.txt
 
 # FIXME install the python dependencies
 

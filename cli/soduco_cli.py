@@ -5,7 +5,6 @@ from PIL import Image
 import sys
 sys.path.insert(1, '../')
 
-from back.Application import OCREngine
 from process_options import process_options
 from pdf_opener import get_pdf_page
 
@@ -56,35 +55,12 @@ def _get_parser():
         )
 
     parser.add_argument(
-        "--skip-ocr",
-        action="store_true",
-        dest="disable_OCR",
-        required=False,
-        help="Skip tesseract text extraction",
-        )
-    parser.add_argument(
-        "--skip-ner",
-        dest="disable_NER",
-        action="store_true",
-        required=False,
-        help="Skip the NER processing",
-        )
-    parser.add_argument(
         "--font-size",
         default=-1,
         required=False,
         type=int,
         help="Set document body font size in px (default=-1 : auto)",
     )
-
-    parser.add_argument(
-        "--ocr-engine",
-        default=OCREngine.PERO,
-        required=False,
-        type=lambda x: OCREngine[x.upper()],
-        choices=list(OCREngine),
-        help="Specify the ocr engine used (PERO|TESSERACT)"
-        )
 
     parser.add_argument(
         "--layout-file",
