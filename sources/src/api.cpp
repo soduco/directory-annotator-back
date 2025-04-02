@@ -18,6 +18,8 @@
 #include <CLI/CLI.hpp>
 
 #include "scribo.hpp"
+#include "process.hpp"
+#include <sstream>
 
 
 
@@ -102,13 +104,74 @@ void process(std::string_view directory, std::variant<std::string_view, int> vie
 
     res->writeStatus("200 OK")
        ->writeHeader("Content-Type", "text/json")
-       ->end(sp);
-
-      
-    //->end(fmt::format("{{ 'deskew' : {} }}", params.deskew_angle));
+       ->end(sp);      
 }
 
+
+
+
+
+/// @brief  Get the layout of the document
+/// The payload of the request should be an image (webp or jpeg) in the body of the request
+/// @param res 
+/// @param req 
+void get_layout(uWS::HttpResponse<false> *res, uWS::HttpRequest *req) {
+    std::vector<std::byte> _buffer;
+
+    // Get the json payload from the request and parse it
+    res->onData([buffer = &_buffer, res](std::string_view data, bool last) {
+        auto tmp = (const std::byte*) data.data();
+        buffer->insert(buffer->end(), tmp, tmp + data.size());
+        if (last) {
+            try {
+                mln::image2d<uint8_t> image;
+                std::ostringstream ss;
+                auto p = params {
+                    .display_opts = 0,
+                    .denoising = -1,
+                    .deskew = true,
+                    .bg_suppression = true,
+                    .debug = 0,
+                    .xheight = -1,
+                    .output_path = "",
+                    .output_layout_file = "",
+                    .json = &ss
+                };
+
+
+
+                spdlog::info("Extracting layout from image.");
+                auto start = std::chrono::high_resolution_clock::now();
+                mln::io::imread_from_bytes(*buffer, image);
+        
+                process(image, p);
+
+                auto end = std::chrono::high_resolution_clock::now();
+                auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+                spdlog::info("Layout extraction took {}ms", duration.count());
+                res->writeStatus("200 OK")
+                   ->writeHeader("Content-Type", "text/json")
+                   ->end(ss.view());
+            }
+            catch (const std::exception& e) {
+                spdlog::error("Error: {}", e.what());
+                res->writeStatus("400 Bad Request")
+                   ->writeHeader("Content-Type", "text/plain")
+                   ->end(fmt::format("Bad Request: {}", e.what()));
+            }
+        }
+    });
+
+    res->onAborted([]() {
+        spdlog::warn("Request aborted.");
+    });
+}
+
+
+
+
 static const char* usage = R"(Document processing API
+    POST /imgproc/layout : Get the layout of the document (Pass the image in the body of the request, returns a json with the layout)
     GET  /imgproc/deskew?directory=<directory>&view=<view> : Process the image from the given directory and view
     POST /imgproc/deskew : Process the image from the given directory and view
     {
@@ -128,7 +191,7 @@ int main(int argc, char* argv[]) {
     // Parse the arguments of the command line
     auto app = CLI::App(usage);
     app.add_option("-s,--storage-uri", storage_uri, "Storage server URI")->default_val("http://localhost:3000");
-    app.add_option("-t,--storage-auth-token", storage_auth_token, "Storage server authentication token")->default_val("12345678");
+    app.add_option("-t,--storage-auth-token", storage_auth_token, "Storage server authentication token")->default_val("00000000");
     app.add_option("-p,--port", listen_port, "Port to listen on")->default_val(6969);
     app.add_option("-P,--prefix", prefix, "Prefix for each route");
 
@@ -176,6 +239,7 @@ int main(int argc, char* argv[]) {
             spdlog::warn("Request aborted.");
         });
     })
+    .post(prefix + "/imgproc/layout", get_layout)
     .get(prefix + "/health_check", health_check)
     .get(prefix + "/imgproc/health_check", health_check)
     .get(prefix + "/imgproc/deskew/health_check", health_check)

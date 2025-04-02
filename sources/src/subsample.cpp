@@ -77,13 +77,13 @@ mln::image2d<uint8_t> resize(const mln::image2d<uint8_t>& input, float scale)
   for (int y = 0; y < h; ++y)
     for (int x = 0; x < w; ++x)
     {
-      float x0 = x / sx;
-      float y0 = y / sy;
-      int lx = std::floor(x0);
-      int ly = std::floor(y0);
-      int cx = std::ceil(x0);
-      int cy = std::ceil(y0);
-  
+      float x0 = x * sx;
+      float y0 = y * sy;
+      int lx = int(x0 + 0.5f); // Round to the closest int.
+      int ly = int(y0 + 0.5f); // Round to the closest int.
+      int cx = int(x0 + 0.5f); // Round to the closest int.
+      int cy = int(y0 + 0.5f); // Round to the closest int.
+
 
       float tmp0 = std::lerp(input({lx,ly}), input({cx,ly}), x0 - lx);
       float tmp1 = std::lerp(input({lx,cy}), input({cx,cy}), x0 - lx);

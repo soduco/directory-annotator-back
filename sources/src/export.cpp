@@ -7,7 +7,7 @@ using json = nlohmann::json;
 
 namespace scribo
 {
-  void to_json(const char* filename, std::span<const LayoutRegion> regions)
+  void to_json(std::span<const LayoutRegion> regions, std::ostream& os)
   {
     static const std::string enum2str[] = {
         "PAGE",            //
@@ -36,8 +36,7 @@ namespace scribo
       });
       root.push_back(std::move(element));
     }
-    std::ofstream o(filename);
-    o << std::setw(4) << root << std::endl;
+    os << std::setw(4) << root << std::endl;
   }
 
   void export_manifest(const char* filename, const cleaning_parameters& cparams)

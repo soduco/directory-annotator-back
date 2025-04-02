@@ -59,24 +59,26 @@ pybind11_add_module(scribocxx MODULE
 target_include_directories(scribocxx PUBLIC sources/include)
 target_link_libraries(scribocxx PRIVATE pylene::core pylene::io-freeimage spdlog::spdlog pylene-numpy::pylene-numpy tesseract scribo)
 
-add_executable(cli
+add_library(scribo-helpers
   sources/src/display.cpp
   sources/src/export.cpp
-  sources/src/main.cpp
+  sources/src/process.hpp
+  sources/src/process.cpp
   sources/src/pdf_tool.hpp
-  sources/src/pdf_tool.cpp)
-
-add_executable(server
-  sources/src/api.cpp
+  sources/src/pdf_tool.cpp
 )
+target_link_libraries(scribo-helpers PRIVATE scribo spdlog::spdlog blend2d::blend2d nlohmann_json::nlohmann_json poppler::poppler)
+
+add_executable(cli sources/src/main.cpp)
+add_executable(server sources/src/api.cpp)
 
 
 target_include_directories(cli PUBLIC sources/include)
-target_link_libraries(cli pylene::io-freeimage scribo blend2d::blend2d spdlog::spdlog nlohmann_json::nlohmann_json CLI11::CLI11 poppler::poppler)
+target_link_libraries(cli pylene::io-freeimage scribo-helpers  spdlog::spdlog  CLI11::CLI11 )
 set_target_properties(cli PROPERTIES INSTALL_RPATH "./lib" )
 
 target_include_directories(server PUBLIC sources/include)
-target_link_libraries(server cpprestsdk::cpprestsdk uwebsockets::uwebsockets spdlog::spdlog scribo pylene::io-freeimage CLI11::CLI11)
+target_link_libraries(server cpprestsdk::cpprestsdk uwebsockets::uwebsockets spdlog::spdlog scribo-helpers pylene::io-freeimage CLI11::CLI11)
 set_target_properties(server PROPERTIES INSTALL_RPATH "./lib" )
 
 include(GNUInstallDirs)
