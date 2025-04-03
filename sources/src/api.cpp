@@ -124,7 +124,6 @@ void get_layout(uWS::HttpResponse<false> *res, uWS::HttpRequest *req) {
         buffer->insert(buffer->end(), tmp, tmp + data.size());
         if (last) {
             try {
-                mln::image2d<uint8_t> image;
                 std::ostringstream ss;
                 auto p = params {
                     .display_opts = 0,
@@ -142,7 +141,7 @@ void get_layout(uWS::HttpResponse<false> *res, uWS::HttpRequest *req) {
 
                 spdlog::info("Extracting layout from image.");
                 auto start = std::chrono::high_resolution_clock::now();
-                mln::io::imread_from_bytes(*buffer, image);
+                auto image = mln::io::imread_from_bytes(*buffer);
         
                 process(image, p);
 

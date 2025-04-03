@@ -6,6 +6,7 @@
 #include <spdlog/spdlog.h>
 
 #include <mln/io/imsave.hpp>
+#include <mln/core/algorithm/transform.hpp> 
 
 #include "config.hpp"
 #include "display.hpp"
@@ -14,8 +15,22 @@
 
 
 
-void process(mln::image2d<uint8_t> input, const params& params)
+void process(mln::ndbuffer_image _input, const params& params)
 {
+    // Convert to grayscale
+    mln::image2d<uint8_t> input;
+    if (auto* tmp = _input.cast_to<uint8_t, 2>(); tmp != nullptr) {
+      input = *tmp;
+    } else if (auto* tmp = _input.cast_to<mln::rgb8, 2>(); tmp != nullptr) {
+      input = mln::transform(*tmp, [](mln::rgb8 c) -> uint8_t { return (c[0] + c[1] + c[2]) / 3; });
+    } else {
+      auto err = fmt::format("Unsupported image format (ndim={}, sample_type={})", _input.pdim(), (int)_input.sample_type());
+      spdlog::info(err);
+      throw std::runtime_error(err);
+    }
+
+
+
     // 1. Cleaning
     scribo::cleaning_parameters cparams;
     cparams.xheight = params.xheight;

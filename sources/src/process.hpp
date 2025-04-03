@@ -24,7 +24,7 @@ struct params
 
 
 /// @brief Helper function to process an image with given execution parameters
-/// @param input 
+/// @param input An image2d
 /// @param params
 /// @return A string with the detected layout
-void process(mln::image2d<uint8_t> input, const params& params);
+void process(mln::ndbuffer_image input, const params& params);
